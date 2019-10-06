@@ -1,0 +1,84 @@
+# https://stackoverflow.com/questions/54718866/azure-pipeline-nuget-package-versioning-scheme-how-to-get-1-0-revr
+#Set build number automatically
+name: $(majorMinorVersion).$(semanticVersion) # $(rev:r) # NOTE: rev resets when the default retention period expires
+
+# pipeline variables
+variables:
+  majorMinorVersion: 1.0
+  # semanticVersion counter is automatically incremented by one in each execution of pipeline
+  # second parameter is seed value to reset to every time the referenced majorMinorVersion is changed
+  semanticVersion: $[counter(variables['majorMinorVersion'], 0)]
+
+# Only run against master
+trigger: none
+
+# Don't run against PRs
+pr: none
+
+stages:
+- stage: build_and_unitTests
+  jobs:
+  - job: run_build_and_unitTests
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - script: dotnet restore
+    
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: build
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+    
+    - task: DotNetCoreCLI@2
+      displayName: UnitTests
+      inputs:
+        command: test
+        projects: '**/tests/**/*UnitTests.csproj'
+        arguments: '--configuration $(buildConfiguration)'      
+
+- stage: integrationTests_and_nugetpush
+  dependsOn: build_and_unitTests
+  jobs:
+  - job: publish
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - script: dotnet publish --output $(Build.ArtifactStagingDirectory)
+
+    - task: FileTransform@1
+      displayName: 'local.settings.json variables set'    
+      inputs:
+        folderPath: '$(Build.ArtifactStagingDirectory)'
+        fileType: json
+        targetFiles: local.settings.json  
+        
+    - task: VSTest@2
+      condition: eq(variables['RunIntegrationTests'], true)
+      inputs:
+        testSelector: 'testAssemblies'
+        testAssemblyVer2: '**\*.IntegrationTests.dll'
+        searchFolder: '$(Build.ArtifactStagingDirectory)'
+        otherConsoleOptions: '/platform:x64 /Framework:.NETCoreApp,Version=v2.1 /logger:console;verbosity="normal"'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'NuGet pack'
+      condition: eq(variables['PushPackage'], true)
+      inputs:
+        command: 'pack'
+        configuration: $(BuildConfiguration)
+        packagesToPack: '**/Microsoft.Extensions.Http.csproj'
+        packDirectory: '$(build.artifactStagingDirectory)'
+        versioningScheme: byBuildNumber # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops#yaml-snippet
+
+    - task: NuGetCommand@2
+      displayName: 'NuGet push'    
+      condition: eq(variables['PushPackage'], true)
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'Nuget official'
+
+#    - task: PublishBuildArtifacts@1

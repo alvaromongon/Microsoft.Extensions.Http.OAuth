@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+</PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Extensions.Http.OAuth.Model\Microsoft.Extensions.Http.OAuth.Model.csproj" />
+  </ItemGroup>
+
+</Project>
+

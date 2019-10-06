@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Alvaro Montero Gonzalez</Authors>
+    <owners>Alvaro Montero Gonzalez</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <Description>Oauth implementation for Microsoft.Extensions.Http.</Description>
+    <Copyright>Copyright 2019</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIconUrl>https://www.nuget.org/Content/gallery/img/default-package-icon.svg</PackageIconUrl>
+    <PackageReleaseNotes>First Release.</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/alvaromongon/Microsoft.Extensions.Http.OAuth</RepositoryUrl>
+
+    <PackageTags>netstandard;Oauth;Microsoft;Http</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Extensions.Http.OAuth.Abstractions\Microsoft.Extensions.Http.OAuth.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
