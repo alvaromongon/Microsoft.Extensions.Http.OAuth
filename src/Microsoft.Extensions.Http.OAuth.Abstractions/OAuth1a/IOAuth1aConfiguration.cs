@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Extensions.Http.Abstractions.OAuth1a
+﻿using Microsoft.Extensions.Http.OAuth.Model;
+
+namespace Microsoft.Extensions.Http.Abstractions.OAuth1a
 {
     public interface IOAuth1aConfiguration
     {
@@ -7,6 +9,9 @@
         string AccessToken { get; }
         string AccessTokenSecret { get; }
 
-        string SignatureMethod { get; }
+        /// <summary>
+        /// Currently only HMAC-SHA1 is supported
+        /// </summary>
+        SignatureMethodType SignatureMethod { get; }
     }
 }

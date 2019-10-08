@@ -1,0 +1,11 @@
+﻿{
+    "RequestUri": "***",
+
+    "ConsumerKey": "***",
+    "ConsumerSecret": "***",
+
+    "AccessToken": "***",
+    "AccessTokenSecret": "***",
+
+    "SignatureMethod": "10"
+}

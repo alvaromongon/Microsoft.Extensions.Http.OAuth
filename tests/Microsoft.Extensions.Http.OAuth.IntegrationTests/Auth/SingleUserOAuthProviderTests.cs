@@ -1,12 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Http.Abstractions;
 using Microsoft.Extensions.Http.Abstractions.OAuth1a;
 using Microsoft.Extensions.Http.Implementation.Auth;
-using Microsoft.Extensions.Http.IntegrationTests.TestTools.Auth;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Http.OAuth.IntegrationTests.Configuration;
 using Xunit;
 
 namespace Microsoft.Extensions.Http.IntegrationTests.Auth
@@ -16,14 +17,25 @@ namespace Microsoft.Extensions.Http.IntegrationTests.Auth
     /// </summary>
     public class SingleUserOAuthProviderTests
     {
+        private const string _settingsFile = "local.settings.json";
+
+        private readonly string _requestUrl;
         private readonly IHost _host;
 
         public SingleUserOAuthProviderTests()
         {
+            var configurationRoot = new ConfigurationBuilder()
+                    .SetBasePath(Environment.CurrentDirectory)
+                    .AddJsonFile(_settingsFile, optional: false, reloadOnChange: false)
+                    .Build();
+
+            _requestUrl = configurationRoot.GetValue<string>("RequestUrl");
+
             var builder = new HostBuilder() 
             .ConfigureServices((hostContext, services) =>
             {
-                services.AddSingleton<IOAuth1aConfiguration, TwitterSingleUserOAuthConfiguration>();
+                services.AddSingleton<IConfigurationRoot>(configurationRoot);
+                services.AddSingleton<IOAuth1aConfiguration, OAuth1aConfiguration>();
                 services.AddSingleton<IAuthProvider, OAuth1aProtocol>();
                 services.AddHttpClient();
             }).UseConsoleLifetime();
@@ -39,8 +51,7 @@ namespace Microsoft.Extensions.Http.IntegrationTests.Auth
                 // Arrange
                 var httpMethod = HttpMethod.Get;
 
-                // TODO: Configurable, use endpoint supported OAuth1a. Do not display twitter here.
-                var requestUri = new Uri("https://api.twitter.com/1.1/statuses/home_timeline.json?include_entities=true&page=1");
+                var requestUri = new Uri(_requestUrl);
 
                 var services = serviceScope.ServiceProvider;
                 var httpClient = services.GetRequiredService<IHttpClientFactory>().CreateClient();

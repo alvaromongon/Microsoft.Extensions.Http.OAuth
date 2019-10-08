@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Http.Abstractions;
-using Microsoft.Extensions.Http.Abstractions.OAuth1a;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -9,10 +6,15 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Http.Abstractions;
+using Microsoft.Extensions.Http.Abstractions.OAuth1a;
+using Microsoft.Extensions.Http.OAuth.Model;
 
 namespace Microsoft.Extensions.Http.Implementation.Auth
 {
     /// <summary>
+    /// https://oauth.net/core/1.0a/
     /// https://tools.ietf.org/html/rfc5849
     /// OAuth provides a method for clients to access server resources on behalf of a resource owner
     /// (such as a different client or an end-user).  
@@ -22,7 +24,6 @@ namespace Microsoft.Extensions.Http.Implementation.Auth
     public class OAuth1aProtocol : IAuthProvider
     {
         private const string Scheme = "OAuth";
-        private const string OauthSignatureMethod = "HMAC-SHA1"; // TODO: Make it configurable
         private const string OauthVersion = "1.0";
 
         private readonly IOAuth1aConfiguration _configuration;
@@ -38,7 +39,7 @@ namespace Microsoft.Extensions.Http.Implementation.Auth
             {
                 { "oauth_consumer_key", _configuration.ConsumerKey },
                 { "oauth_nonce", BuildNonce() },
-                { "oauth_signature_method", OauthSignatureMethod },
+                { "oauth_signature_method", _configuration.SignatureMethod.ToOAuthString() },
                 { "oauth_timestamp", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString() },
                 { "oauth_token", _configuration.AccessToken },
                 { "oauth_version", OauthVersion }
@@ -55,15 +56,12 @@ namespace Microsoft.Extensions.Http.Implementation.Auth
             return Task.FromResult(new AuthenticationHeaderValue(Scheme, parametersSeparatedByComman));            
         }
 
+        /// <summary>
+        /// Any approach which produces a relatively random alphanumeric string should be OK here
+        /// </summary>
         private static string BuildNonce()
         {
-            // Any approach which produces a relatively random alphanumeric string should be OK here
             return Guid.NewGuid().ToString().Replace("-", string.Empty);
-        }
-
-        public Task<string> AuthorizationHeader(HttpMethod httpMethod, Uri requestUri)
-        {
-            throw new NotImplementedException();
         }
 
         private string BuildSignature(HttpRequestMessage request, IDictionary<string, string> headerParameters)
