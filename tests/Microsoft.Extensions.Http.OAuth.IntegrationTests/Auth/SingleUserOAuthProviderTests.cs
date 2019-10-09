@@ -23,8 +23,8 @@ namespace Microsoft.Extensions.Http.IntegrationTests.Auth
         private string _requestUrl;
         private IHost _host;
 
-        [ClassInitialize]
-        public void ClassInitialize()
+        [TestInitialize]
+        public void TestInitialize()
         {
             var configurationRoot = new ConfigurationBuilder()
                     .SetBasePath(Environment.CurrentDirectory)
