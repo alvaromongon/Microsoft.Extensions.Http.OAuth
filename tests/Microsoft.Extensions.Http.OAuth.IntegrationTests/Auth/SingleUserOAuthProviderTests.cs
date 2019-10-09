@@ -61,7 +61,7 @@ namespace Microsoft.Extensions.Http.IntegrationTests.Auth
 
                 var request = new HttpRequestMessage(httpMethod, requestUri);
 
-                request.Headers.Authorization = await sut.AuthorizationHeader(request);
+                request.Headers.Authorization = await sut.AuthenticationHeader(request);
 
                 // Act
                 var result = await httpClient.SendAsync(request);

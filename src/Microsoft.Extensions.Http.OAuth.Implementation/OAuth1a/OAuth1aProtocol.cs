@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.Http.Implementation.Auth
             _configuration = configuration;
         }
 
-        public Task<AuthenticationHeaderValue> AuthorizationHeader(HttpRequestMessage request)
+        public Task<AuthenticationHeaderValue> AuthenticationHeader(HttpRequestMessage request)
         {
             var headerParameters = new SortedDictionary<string, string>
             {

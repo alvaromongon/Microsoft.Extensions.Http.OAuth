@@ -6,6 +6,6 @@ namespace Microsoft.Extensions.Http.Abstractions
 {
     public interface IAuthProvider
     {
-        Task<AuthenticationHeaderValue> AuthorizationHeader(HttpRequestMessage httpRequestMessage);
+        Task<AuthenticationHeaderValue> AuthenticationHeader(HttpRequestMessage httpRequestMessage);
     }
 }
