@@ -13,6 +13,8 @@
     <RepositoryUrl>https://github.com/alvaromongon/Microsoft.Extensions.Http.OAuth</RepositoryUrl>
 
     <PackageTags>netstandard;Oauth;Microsoft;Http</PackageTags>
+  
+    <PackageId>Extensions.Http.OAuth.Abstractions</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

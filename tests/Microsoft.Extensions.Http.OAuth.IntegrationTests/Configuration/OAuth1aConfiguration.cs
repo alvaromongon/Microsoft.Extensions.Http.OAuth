@@ -22,6 +22,5 @@ namespace Microsoft.Extensions.Http.OAuth.IntegrationTests.Configuration
         public string AccessTokenSecret => _configurationRoot.GetValue<string>(nameof(AccessTokenSecret));
 
         public SignatureMethodType SignatureMethod => ((SignatureMethodType)_configurationRoot.GetValue<int>(nameof(SignatureMethod)));
-    };
     }
 }
