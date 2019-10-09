@@ -8,21 +8,23 @@ using Microsoft.Extensions.Http.Abstractions;
 using Microsoft.Extensions.Http.Abstractions.OAuth1a;
 using Microsoft.Extensions.Http.Implementation.Auth;
 using Microsoft.Extensions.Http.OAuth.IntegrationTests.Configuration;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Microsoft.Extensions.Http.IntegrationTests.Auth
 {
     /// <summary>
     /// https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.2#use-ihttpclientfactory-in-a-console-app
     /// </summary>
+    [TestClass]
     public class SingleUserOAuthProviderTests
     {
         private const string _settingsFile = "local.settings.json";
 
-        private readonly string _requestUrl;
-        private readonly IHost _host;
+        private string _requestUrl;
+        private IHost _host;
 
-        public SingleUserOAuthProviderTests()
+        [ClassInitialize]
+        public void ClassInitialize()
         {
             var configurationRoot = new ConfigurationBuilder()
                     .SetBasePath(Environment.CurrentDirectory)
@@ -43,7 +45,7 @@ namespace Microsoft.Extensions.Http.IntegrationTests.Auth
             _host = builder.Build();
         }
 
-        [Fact]
+        [TestMethod]
         public async Task When_ExecuteRequest_WithCorrectCredentials_RequestAccepted()
         {            
             using (var serviceScope = _host.Services.CreateScope())
@@ -65,7 +67,7 @@ namespace Microsoft.Extensions.Http.IntegrationTests.Auth
                 var result = await httpClient.SendAsync(request);
 
                 // Assert
-                Assert.True(result.IsSuccessStatusCode);
+                Assert.IsTrue(result.IsSuccessStatusCode);
             }
         }                
     }    
