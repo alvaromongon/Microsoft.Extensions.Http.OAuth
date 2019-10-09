@@ -31,7 +31,7 @@ namespace Microsoft.Extensions.Http.IntegrationTests.Auth
                     .AddJsonFile(_settingsFile, optional: false, reloadOnChange: false)
                     .Build();
 
-            _requestUrl = configurationRoot.GetValue<string>("RequestUrl");
+            _requestUrl = configurationRoot.GetValue<string>("RequestUri");
 
             var builder = new HostBuilder() 
             .ConfigureServices((hostContext, services) =>
