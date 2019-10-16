@@ -1,5 +1,6 @@
 ﻿{
-    "RequestUri": "***",
+    "GetRequestUri": "***",
+    "PostRequestUri": "***",
 
     "ConsumerKey": "***",
     "ConsumerSecret": "***",

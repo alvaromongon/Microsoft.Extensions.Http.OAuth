@@ -20,7 +20,8 @@ namespace Microsoft.Extensions.Http.IntegrationTests.Auth
     {
         private const string _settingsFile = "local.settings.json";
 
-        private string _requestUrl;
+        private string _getRequestUrl;
+        private string _postRequestUrl;
         private IHost _host;
 
         [TestInitialize]
@@ -31,7 +32,8 @@ namespace Microsoft.Extensions.Http.IntegrationTests.Auth
                     .AddJsonFile(_settingsFile, optional: false, reloadOnChange: false)
                     .Build();
 
-            _requestUrl = configurationRoot.GetValue<string>("RequestUri");
+            _getRequestUrl = configurationRoot.GetValue<string>("GetRequestUri");
+            _postRequestUrl = configurationRoot.GetValue<string>("PostRequestUri");
 
             var builder = new HostBuilder() 
             .ConfigureServices((hostContext, services) =>
@@ -46,14 +48,14 @@ namespace Microsoft.Extensions.Http.IntegrationTests.Auth
         }
 
         [TestMethod]
-        public async Task When_ExecuteRequest_WithCorrectCredentials_RequestAccepted()
+        public async Task When_Get_ExecuteRequest_WithCorrectCredentials_RequestAccepted()
         {            
             using (var serviceScope = _host.Services.CreateScope())
             {
                 // Arrange
                 var httpMethod = HttpMethod.Get;
 
-                var requestUri = new Uri(_requestUrl);
+                var requestUri = new Uri(_getRequestUrl);
 
                 var services = serviceScope.ServiceProvider;
                 var httpClient = services.GetRequiredService<IHttpClientFactory>().CreateClient();
@@ -69,6 +71,32 @@ namespace Microsoft.Extensions.Http.IntegrationTests.Auth
                 // Assert
                 Assert.IsTrue(result.IsSuccessStatusCode);
             }
-        }                
+        }
+
+        [TestMethod]
+        public async Task When_Post_ExecuteRequest_WithCorrectCredentials_RequestAccepted()
+        {
+            using (var serviceScope = _host.Services.CreateScope())
+            {
+                // Arrange
+                var httpMethod = HttpMethod.Post;
+
+                var requestUri = new Uri(_postRequestUrl);
+
+                var services = serviceScope.ServiceProvider;
+                var httpClient = services.GetRequiredService<IHttpClientFactory>().CreateClient();
+                var sut = services.GetRequiredService<IAuthProvider>();
+
+                var request = new HttpRequestMessage(httpMethod, requestUri);
+
+                request.Headers.Authorization = await sut.AuthenticationHeader(request);
+
+                // Act
+                var result = await httpClient.SendAsync(request);
+
+                // Assert
+                Assert.IsTrue(result.IsSuccessStatusCode);
+            }
+        }
     }    
 }
