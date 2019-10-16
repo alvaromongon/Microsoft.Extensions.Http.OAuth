@@ -74,6 +74,7 @@ namespace Microsoft.Extensions.Http.IntegrationTests.Auth
         }
 
         [TestMethod]
+        [Ignore("For this test to work it would need a new status to be set on every run, I think the code is covered by GET method.")]
         public async Task When_Post_ExecuteRequest_WithCorrectCredentials_RequestAccepted()
         {
             using (var serviceScope = _host.Services.CreateScope())
