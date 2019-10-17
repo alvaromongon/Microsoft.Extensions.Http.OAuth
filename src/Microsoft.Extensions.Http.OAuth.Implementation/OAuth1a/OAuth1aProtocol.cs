@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.WebUtilities;
+using System.Web;
 using Microsoft.Extensions.Http.Abstractions;
 using Microsoft.Extensions.Http.Abstractions.OAuth1a;
 using Microsoft.Extensions.Http.OAuth.Model;
@@ -100,10 +100,11 @@ namespace Microsoft.Extensions.Http.Implementation.Auth
                 }
             }
 
-            // Query
-            foreach (var pair in QueryHelpers.ParseQuery(request.RequestUri.Query))
+            // Query  
+            var parsedQuery = HttpUtility.ParseQueryString(request.RequestUri.Query);
+            foreach (var key in parsedQuery.AllKeys)
             {
-                signatureParameters.Add(pair.Key, pair.Value);
+                signatureParameters.Add(key, parsedQuery[key]);
             }
 
             return signatureParameters;
