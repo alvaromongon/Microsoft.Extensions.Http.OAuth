@@ -1,3 +1,4 @@
+[![Build Status](https://dev.azure.com/wtwd/Ease%20Maker/_apis/build/status/alvaromongon.Microsoft.Extensions.Http.OAuth?branchName=master)](https://dev.azure.com/wtwd/Ease%20Maker/_build/latest?definitionId=6&branchName=master)
 
 # Introduction 
 Microsoft http extension for OAuth.
