@@ -89,5 +89,5 @@ stages:
         command: 'push'
         packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
         publishVstsFeed: 'wtwd'
-        #nuGetFeedType: 'external'
-        #publishFeedCredentials: 'Nuget official'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'Nuget official'
