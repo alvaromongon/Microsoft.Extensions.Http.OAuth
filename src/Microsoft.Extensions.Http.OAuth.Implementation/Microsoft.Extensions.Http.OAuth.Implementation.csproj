@@ -9,7 +9,7 @@
     <Copyright>Copyright 2019</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://www.nuget.org/Content/gallery/img/default-package-icon.svg</PackageIconUrl>
-    <PackageReleaseNotes>First Release.</PackageReleaseNotes>
+    <PackageReleaseNotes>OAuth1 support</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/alvaromongon/Microsoft.Extensions.Http.OAuth</RepositoryUrl>
 
     <PackageTags>netstandard;Oauth;Oauth1a;Microsoft;Http</PackageTags>
@@ -18,7 +18,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Extensions.Http.OAuth.Abstractions\Microsoft.Extensions.Http.OAuth.Abstractions.csproj" />
+      <ProjectReference Include="..\Microsoft.Extensions.Http.OAuth.Abstractions\Microsoft.Extensions.Http.OAuth.Abstractions.csproj" />
+      <ProjectReference Include="..\Microsoft.Extensions.Http.OAuth.Model\Microsoft.Extensions.Http.OAuth.Model.csproj" />
   </ItemGroup>
 
 </Project>

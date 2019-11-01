@@ -73,7 +73,7 @@ stages:
 
     - task: DotNetCoreCLI@2
       displayName: 'NuGet pack'
-      condition: eq(variables['PushPackage'], true)
+      condition: eq(variables['PackPackage'], true)
       inputs:
         command: 'pack'
         configuration: $(BuildConfiguration)
@@ -88,5 +88,5 @@ stages:
       inputs:
         command: 'push'
         packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-        nuGetFeedType: 'internal'
+        nuGetFeedType: 'external'
         publishFeedCredentials: 'wtwd'
