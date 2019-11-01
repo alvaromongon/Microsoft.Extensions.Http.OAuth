@@ -62,10 +62,10 @@ stages:
         searchFolder: '$(Build.BinariesDirectory)'
         otherConsoleOptions: '/platform:x64 /Framework:.NETCoreApp,Version=v2.1 /logger:console;verbosity="normal"'
 
-- stage: artifact_publishing
+- stage: pushPackage
   dependsOn: integrationTests
   jobs:
-  - job: artifact_publishing
+  - job: pushPackage
     pool:
       vmImage: 'windows-latest'
     steps:
@@ -80,6 +80,7 @@ stages:
         packagesToPack: '**/Microsoft.Extensions.Http.OAuth.Implementation.csproj'
         packDirectory: '$(build.ArtifactStagingDirectory)'
         versioningScheme: byBuildNumber # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops#yaml-snippet
+        arguments: -IncludeReferencedProjects
 
     - task: NuGetCommand@2
       displayName: 'NuGet push'    
@@ -88,3 +89,4 @@ stages:
         command: 'push'
         packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
         nuGetFeedType: 'internal'
+        publishFeedCredentials: 'wtwd'
