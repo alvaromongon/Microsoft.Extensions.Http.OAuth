@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.Extensions.Http.OAuth.Abstractions\Microsoft.Extensions.Http.OAuth.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.Extensions.Http.OAuth.Implementation\Microsoft.Extensions.Http.OAuth.Implementation.csproj" />
   </ItemGroup>
 

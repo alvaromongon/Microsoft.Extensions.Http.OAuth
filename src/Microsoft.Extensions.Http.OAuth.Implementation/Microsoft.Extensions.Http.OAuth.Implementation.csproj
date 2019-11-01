@@ -14,12 +14,23 @@
 
     <PackageTags>netstandard;Oauth;Oauth1a;Microsoft;Http</PackageTags>
   
-    <PackageId>Extensions.Http.OAuth.Abstractions</PackageId>
+    <PackageId>Extensions.Http.OAuth</PackageId>
+  
+    <Product>Microsoft.Extensions.Http.OAuth</Product>
   </PropertyGroup>
 
+  <!-- https://dev.to/wabbbit/include-both-nuget-package-references-and-project-reference-dll-using-dotnet-pack-2d8p -->
   <ItemGroup>
-      <ProjectReference Include="..\Microsoft.Extensions.Http.OAuth.Abstractions\Microsoft.Extensions.Http.OAuth.Abstractions.csproj" />
-      <ProjectReference Include="..\Microsoft.Extensions.Http.OAuth.Model\Microsoft.Extensions.Http.OAuth.Model.csproj" />
+      <ProjectReference Include="..\Microsoft.Extensions.Http.OAuth.Abstractions\Microsoft.Extensions.Http.OAuth.Abstractions.csproj">
+          <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+          <IncludeAssets>Microsoft.Extensions.Http.OAuth.Abstractions.dll</IncludeAssets>
+      </ProjectReference>
   </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Microsoft.Extensions.Http.OAuth.Model\Microsoft.Extensions.Http.OAuth.Model.csproj">
+            <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+            <IncludeAssets>Microsoft.Extensions.Http.OAuth.Model.dll</IncludeAssets>
+        </ProjectReference>
+    </ItemGroup>
 
 </Project>
