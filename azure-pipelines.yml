@@ -62,10 +62,10 @@ stages:
         searchFolder: '$(Build.BinariesDirectory)'
         otherConsoleOptions: '/platform:x64 /Framework:.NETCoreApp,Version=v2.1 /logger:console;verbosity="normal"'
 
-- stage: pushPackage
+- stage: packAndPushPackage
   dependsOn: integrationTests
   jobs:
-  - job: pushPackage
+  - job: packAndPushPackage
     pool:
       vmImage: 'windows-latest'
     steps:
@@ -73,7 +73,7 @@ stages:
 
     - task: DotNetCoreCLI@2
       displayName: 'NuGet pack'
-      condition: eq(variables['PackPackage'], true)
+      condition: eq(variables['PackAndPushPackage'], true)
       inputs:
         command: 'pack'
         configuration: $(BuildConfiguration)
@@ -84,9 +84,10 @@ stages:
 
     - task: NuGetCommand@2
       displayName: 'NuGet push'    
-      condition: eq(variables['PushPackage'], true)
+      condition: eq(variables['PackAndPushPackage'], true)
       inputs:
         command: 'push'
         packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-        nuGetFeedType: 'external'
-        publishFeedCredentials: 'Nuget official'
+        publishVstsFeed: 'wtwd'
+        #nuGetFeedType: 'external'
+        #publishFeedCredentials: 'Nuget official'
