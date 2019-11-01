@@ -38,19 +38,19 @@ stages:
         projects: '**/tests/**/*UnitTests.csproj'
         arguments: '--configuration $(buildConfiguration)'      
 
-- stage: integrationTests_and_nugetpush
+- stage: integrationTests
   dependsOn: build_and_unitTests
   jobs:
-  - job: publish
+  - job: integrationTests
     pool:
       vmImage: 'windows-latest'
     steps:
-    - script: dotnet publish --output $(Build.ArtifactStagingDirectory)
+    - script: dotnet publish --configuration $(BuildConfiguration) --output $(Build.BinariesDirectory)
 
     - task: FileTransform@1
       displayName: 'local.settings.json variables set'    
       inputs:
-        folderPath: '$(Build.ArtifactStagingDirectory)'
+        folderPath: '$(Build.BinariesDirectory)'
         fileType: json
         targetFiles: local.settings.json  
         
@@ -59,8 +59,17 @@ stages:
       inputs:
         testSelector: 'testAssemblies'
         testAssemblyVer2: '**\*.IntegrationTests.dll'
-        searchFolder: '$(Build.ArtifactStagingDirectory)'
+        searchFolder: '$(Build.BinariesDirectory)'
         otherConsoleOptions: '/platform:x64 /Framework:.NETCoreApp,Version=v2.1 /logger:console;verbosity="normal"'
+
+- stage: artifact_publishing
+  dependsOn: integrationTests
+  jobs:
+  - job: artifact_publishing
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - script: dotnet publish --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)
 
     - task: DotNetCoreCLI@2
       displayName: 'NuGet pack'
@@ -69,7 +78,7 @@ stages:
         command: 'pack'
         configuration: $(BuildConfiguration)
         packagesToPack: '**/Microsoft.Extensions.Http.OAuth.Implementation.csproj'
-        packDirectory: '$(build.artifactStagingDirectory)'
+        packDirectory: '$(build.ArtifactStagingDirectory)'
         versioningScheme: byBuildNumber # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops#yaml-snippet
 
     - task: NuGetCommand@2
@@ -78,7 +87,4 @@ stages:
       inputs:
         command: 'push'
         packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-        nuGetFeedType: 'external'
-        publishFeedCredentials: 'Nuget official'
-
-#    - task: PublishBuildArtifacts@1
+        nuGetFeedType: 'internal'
