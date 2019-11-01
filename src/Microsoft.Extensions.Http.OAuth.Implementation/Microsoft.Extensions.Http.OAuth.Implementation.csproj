@@ -11,12 +11,11 @@
     <PackageIconUrl>https://www.nuget.org/Content/gallery/img/default-package-icon.svg</PackageIconUrl>
     <PackageReleaseNotes>OAuth1 support</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/alvaromongon/Microsoft.Extensions.Http.OAuth</RepositoryUrl>
-
-    <PackageTags>netstandard;Oauth;Oauth1a;Microsoft;Http</PackageTags>
-  
-    <PackageId>Extensions.Http.OAuth</PackageId>
-  
+    <PackageTags>netstandard;Oauth;Oauth1a;Microsoft;Http</PackageTags>  
+    <PackageId>Extensions.Http.OAuth</PackageId>  
     <Product>Microsoft.Extensions.Http.OAuth</Product>
+  
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
 
   <!-- https://dev.to/wabbbit/include-both-nuget-package-references-and-project-reference-dll-using-dotnet-pack-2d8p -->
@@ -33,4 +32,9 @@
         </ProjectReference>
     </ItemGroup>
 
+    <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
+        <ItemGroup>
+            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
+        </ItemGroup>
+    </Target>
 </Project>

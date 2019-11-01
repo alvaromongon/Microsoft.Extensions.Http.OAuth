@@ -14,8 +14,11 @@ The idea is to include other types of Oauth authentication making very easy to u
 
 ## Oauth1a
 ```csharp
+IOAuth1aConfiguration configuration = new OAuth1aConfiguration(); // You need to create this implementation
+IAuthProvider provider = new OAuth1aProtocol(configuration);
+
 var request = new HttpRequestMessage(httpMethod, requestUri);
-request.Headers.Authorization = await sut.AuthenticationHeader(request);
+request.Headers.Authorization = await provider.AuthenticationHeader(request);
 var result = await httpClient.SendAsync(request);
 ```
 
